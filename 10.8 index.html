@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>English Accent Audio Maker</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    :root {
+        --navy: #213555;
+        --blue: #4f7cac;
+        --light-blue: #eef5fb;
+        --purple: #7667a8;
+        --light-purple: #f2effb;
+        --green: #3e8b70;
+        --red: #b65353;
+        --text: #29384d;
+        --muted: #6f7c8e;
+        --border: #dce4ed;
+        --background: #f5f8fc;
+        --white: #ffffff;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Arial,
+            "Noto Sans KR",
+            sans-serif;
+
+        background:
+            radial-gradient(circle at top left, #e8f4ff, transparent 35%),
+            radial-gradient(circle at bottom right, #f0eaff, transparent 35%),
+            var(--background);
+
+        color: var(--text);
+    }
+
+    .app {
+        width: 100%;
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 45px 18px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .header-icon {
+        font-size: 55px;
+        margin-bottom: 5px;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 34px;
+        color: var(--navy);
+    }
+
+    .header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+    }
+
+    .card {
+        background: rgba(255,255,255,.97);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 30px;
+
+        box-shadow:
+            0 14px 35px rgba(41, 56, 77, .10);
+    }
+
+    .section-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--navy);
+        margin-bottom: 11px;
+    }
+
+    .step {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 27px;
+        height: 27px;
+
+        background: var(--navy);
+        color: white;
+
+        border-radius: 50%;
+
+        font-size: 13px;
+        margin-right: 7px;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 190px;
+
+        resize: vertical;
+
+        border: 2px solid var(--border);
+        border-radius: 16px;
+
+        padding: 17px;
+
+        font-size: 18px;
+        line-height: 1.7;
+
+        color: var(--text);
+        background: #fcfdff;
+
+        outline: none;
+
+        transition: .2s;
+    }
+
+    textarea:focus {
+        border-color: var(--blue);
+
+        box-shadow:
+            0 0 0 4px rgba(79, 124, 172, .10);
+    }
+
+    textarea::placeholder {
+        color: #a2abba;
+    }
+
+    .text-info {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+
+        margin-top: 8px;
+
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 27px 0;
+    }
+
+    .accent-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .accent-option {
+        position: relative;
+    }
+
+    .accent-option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .accent-card {
+        display: block;
+
+        border: 2px solid var(--border);
+        border-radius: 17px;
+
+        padding: 20px;
+
+        cursor: pointer;
+
+        background: white;
+
+        text-align: center;
+
+        transition: .2s;
+    }
+
+    .accent-card:hover {
+        transform: translateY(-2px);
+        border-color: #a9bed5;
+    }
+
+    .accent-option input:checked + .accent-card {
+        border-color: var(--blue);
+        background: var(--light-blue);
+
+        box-shadow:
+            0 6px 18px rgba(79, 124, 172, .12);
+    }
+
+    .flag {
+        font-size: 37px;
+        margin-bottom: 6px;
+    }
+
+    .accent-name {
+        font-size: 17px;
+        font-weight: 800;
+        color: var(--navy);
+    }
+
+    .accent-code {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .settings-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 18px;
+    }
+
+    .setting-box {
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+    }
+
+    .setting-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+        accent-color: var(--blue);
+        cursor: pointer;
+    }
+
+    .voice-status {
+        margin-top: 17px;
+
+        padding: 12px 14px;
+
+        border-radius: 12px;
+
+        background: var(--light-purple);
+        color: #62558a;
+
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .button-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 11px;
+
+        margin-top: 23px;
+    }
+
+    button {
+        border: none;
+        border-radius: 13px;
+
+        padding: 14px 18px;
+
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 800;
+
+        cursor: pointer;
+
+        transition: .2s;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+    }
+
+    .play-button {
+        background:
+            linear-gradient(
+                135deg,
+                #416f9f,
+                #6b6db4
+            );
+
+        color: white;
+
+        box-shadow:
+            0 7px 18px rgba(70, 96, 150, .20);
+    }
+
+    .stop-button {
+        background: #edf0f5;
+        color: #536074;
+    }
+
+    .sample-button {
+        width: 100%;
+
+        margin-top: 10px;
+
+        background: #f5f2fb;
+        color: #675d8f;
+    }
+
+    .status-box {
+        display: none;
+
+        margin-top: 20px;
+
+        padding: 15px;
+
+        border-radius: 13px;
+
+        text-align: center;
+
+        line-height: 1.6;
+    }
+
+    .status-box.speaking {
+        display: block;
+
+        background: #e9f7f1;
+        color: #2e7258;
+    }
+
+    .status-box.error {
+        display: block;
+
+        background: #fff0f0;
+        color: var(--red);
+    }
+
+    .status-box.ready {
+        display: block;
+
+        background: var(--light-blue);
+        color: #426986;
+    }
+
+    .wave {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+
+        height: 18px;
+
+        margin-left: 7px;
+
+        vertical-align: middle;
+    }
+
+    .wave span {
+        width: 3px;
+        height: 7px;
+
+        border-radius: 999px;
+
+        background: currentColor;
+
+        animation:
+            waveMove .7s ease-in-out infinite alternate;
+    }
+
+    .wave span:nth-child(2) {
+        animation-delay: .1s;
+    }
+
+    .wave span:nth-child(3) {
+        animation-delay: .2s;
+    }
+
+    .wave span:nth-child(4) {
+        animation-delay: .3s;
+    }
+
+    @keyframes waveMove {
+        from {
+            height: 5px;
+        }
+
+        to {
+            height: 18px;
+        }
+    }
+
+    .tip {
+        margin-top: 24px;
+
+        padding: 15px 17px;
+
+        border-left: 4px solid var(--purple);
+        border-radius: 10px;
+
+        background: #f8f6fc;
+
+        color: #655e70;
+
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 650px) {
+
+        .app {
+            padding: 25px 12px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 18px;
+        }
+
+        .header h1 {
+            font-size: 27px;
+        }
+
+        .accent-grid,
+        .settings-row {
+            grid-template-columns: 1fr;
+        }
+
+        .button-grid {
+            grid-template-columns: 1fr;
+        }
+
+        textarea {
+            min-height: 170px;
+            font-size: 16px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="header">
+
+        <div class="header-icon">
+            🎧
+        </div>
+
+        <h1>
+            English Accent Audio Maker
+        </h1>
+
+        <p>
+            자유롭게 영어 문장을 입력하고<br>
+            미국식 또는 영국식 발음으로 들어보세요.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <!-- STEP 1 -->
+
+        <div class="section-title">
+            <span class="step">1</span>
+            Enter Your English Text
+        </div>
+
+
+        <textarea
+            id="textInput"
+            maxlength="2000"
+            placeholder="Type any English word, sentence, or paragraph here...
+
+Example:
+Learning English can open many doors to the world."
+            oninput="updateCharacterCount()"
+        ></textarea>
+
+
+        <div class="text-info">
+
+            <span>
+                English text only is recommended.
+            </span>
+
+            <span id="characterCount">
+                0 / 2000
+            </span>
+
+        </div>
+
+
+        <button
+            class="sample-button"
+            onclick="insertSampleText()">
+
+            ✨ Insert Sample Sentence
+
+        </button>
+
+
+        <div class="divider"></div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="section-title">
+            <span class="step">2</span>
+            Choose an Accent
+        </div>
+
+
+        <div class="accent-grid">
+
+
+            <div class="accent-option">
+
+                <input
+                    type="radio"
+                    name="accent"
+                    id="american"
+                    value="en-US"
+                    checked
+                    onchange="updateVoiceInformation()"
+                >
+
+                <label
+                    class="accent-card"
+                    for="american">
+
+                    <div class="flag">
+                        🇺🇸
+                    </div>
+
+                    <div class="accent-name">
+                        American English
+                    </div>
+
+                    <div class="accent-code">
+                        en-US
+                    </div>
+
+                </label>
+
+            </div>
+
+
+            <div class="accent-option">
+
+                <input
+                    type="radio"
+                    name="accent"
+                    id="british"
+                    value="en-GB"
+                    onchange="updateVoiceInformation()"
+                >
+
+                <label
+                    class="accent-card"
+                    for="british">
+
+                    <div class="flag">
+                        🇬🇧
+                    </div>
+
+                    <div class="accent-name">
+                        British English
+                    </div>
+
+                    <div class="accent-code">
+                        en-GB
+                    </div>
+
+                </label>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- SPEED / PITCH -->
+
+        <div class="settings-row">
+
+
+            <div class="setting-box">
+
+                <div class="setting-label">
+
+                    <span>
+                        🐢 Speaking Speed
+                    </span>
+
+                    <span id="rateValue">
+                        0.9×
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="rateInput"
+                    min="0.6"
+                    max="1.4"
+                    step="0.1"
+                    value="0.9"
+                    oninput="updateSettings()"
+                >
+
+            </div>
+
+
+            <div class="setting-box">
+
+                <div class="setting-label">
+
+                    <span>
+                        🎵 Voice Pitch
+                    </span>
+
+                    <span id="pitchValue">
+                        1.0
+                    </span>
+
+                </div>
+
+                <input
+                    type="range"
+                    id="pitchInput"
+                    min="0.7"
+                    max="1.3"
+                    step="0.1"
+                    value="1.0"
+                    oninput="updateSettings()"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="voice-status"
+            id="voiceStatus">
+
+            Loading available English voices...
+
+        </div>
+
+
+        <div class="divider"></div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="section-title">
+            <span class="step">3</span>
+            Listen to Your Audio
+        </div>
+
+
+        <div class="button-grid">
+
+
+            <button
+                class="play-button"
+                onclick="playAudio()">
+
+                🔊 Generate & Play Audio
+
+            </button>
+
+
+            <button
+                class="stop-button"
+                onclick="stopAudio()">
+
+                ⏹ Stop
+
+            </button>
+
+
+        </div>
+
+
+        <div
+            class="status-box"
+            id="statusBox">
+        </div>
+
+
+        <div class="tip">
+
+            💡 <strong>Tip:</strong>
+            이 앱은 Chrome의 음성 합성 기능을 사용합니다.
+            실제로 들리는 목소리는 사용하는 컴퓨터나 운영체제에 설치된
+            음성에 따라 조금 달라질 수 있습니다.
+            가능한 경우 미국식은 <strong>en-US</strong>,
+            영국식은 <strong>en-GB</strong> 음성을 자동으로 선택합니다.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let availableVoices = [];
+
+let currentUtterance = null;
+
+
+/* =========================================================
+   LOAD VOICES
+========================================================= */
+
+function loadVoices() {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        document
+            .getElementById("voiceStatus")
+            .textContent =
+            "This browser does not support speech synthesis.";
+
+        return;
+
+    }
+
+
+    availableVoices =
+        window.speechSynthesis
+            .getVoices();
+
+
+    updateVoiceInformation();
+
+}
+
+
+/*
+Chrome sometimes loads the voice list
+after the page has already loaded.
+*/
+
+if (
+    "speechSynthesis" in window
+) {
+
+    window.speechSynthesis
+        .onvoiceschanged =
+        loadVoices;
+
+}
+
+
+window.addEventListener(
+    "load",
+    function() {
+
+        loadVoices();
+
+        updateCharacterCount();
+
+        updateSettings();
+
+    }
+);
+
+
+/* =========================================================
+   GET SELECTED ACCENT
+========================================================= */
+
+function getSelectedAccent() {
+
+    const selected =
+        document.querySelector(
+            'input[name="accent"]:checked'
+        );
+
+
+    return selected
+        ? selected.value
+        : "en-US";
+
+}
+
+
+/* =========================================================
+   FIND BEST VOICE
+========================================================= */
+
+function findBestVoice(locale) {
+
+    if (
+        availableVoices.length === 0
+    ) {
+
+        availableVoices =
+            window.speechSynthesis
+                .getVoices();
+
+    }
+
+
+    /*
+    First choice:
+    Exact locale such as en-US or en-GB.
+    */
+
+    let voice =
+        availableVoices.find(
+            function(item) {
+
+                return (
+                    item.lang
+                        .toLowerCase()
+                        ===
+                    locale.toLowerCase()
+                );
+
+            }
+        );
+
+
+    if (voice) {
+        return voice;
+    }
+
+
+    /*
+    Second choice:
+    Find a voice containing US / GB information.
+    */
+
+    const region =
+        locale.split("-")[1]
+            .toLowerCase();
+
+
+    voice =
+        availableVoices.find(
+            function(item) {
+
+                const language =
+                    item.lang.toLowerCase();
+
+                return (
+                    language.startsWith("en")
+                    &&
+                    language.includes(
+                        region
+                    )
+                );
+
+            }
+        );
+
+
+    if (voice) {
+        return voice;
+    }
+
+
+    /*
+    Final fallback:
+    Any English voice.
+    */
+
+    voice =
+        availableVoices.find(
+            function(item) {
+
+                return (
+                    item.lang
+                        .toLowerCase()
+                        .startsWith("en")
+                );
+
+            }
+        );
+
+
+    return voice || null;
+
+}
+
+
+/* =========================================================
+   UPDATE VOICE INFORMATION
+========================================================= */
+
+function updateVoiceInformation() {
+
+    const locale =
+        getSelectedAccent();
+
+
+    const voice =
+        findBestVoice(locale);
+
+
+    const box =
+        document.getElementById(
+            "voiceStatus"
+        );
+
+
+    if (
+        locale === "en-US"
+    ) {
+
+        if (voice) {
+
+            box.innerHTML =
+                "🇺🇸 <strong>American English selected</strong><br>" +
+                "Browser voice: " +
+                escapeHTML(voice.name) +
+                " (" +
+                escapeHTML(voice.lang) +
+                ")";
+
+        }
+
+        else {
+
+            box.innerHTML =
+                "🇺🇸 <strong>American English selected</strong><br>" +
+                "The browser will use its default English voice with the en-US language setting.";
+
+        }
+
+    }
+
+    else {
+
+        if (voice) {
+
+            box.innerHTML =
+                "🇬🇧 <strong>British English selected</strong><br>" +
+                "Browser voice: " +
+                escapeHTML(voice.name) +
+                " (" +
+                escapeHTML(voice.lang) +
+                ")";
+
+        }
+
+        else {
+
+            box.innerHTML =
+                "🇬🇧 <strong>British English selected</strong><br>" +
+                "The browser will use its default English voice with the en-GB language setting.";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   PLAY AUDIO
+========================================================= */
+
+function playAudio() {
+
+    const text =
+        document
+            .getElementById(
+                "textInput"
+            )
+            .value
+            .trim();
+
+
+    const statusBox =
+        document.getElementById(
+            "statusBox"
+        );
+
+
+    if (
+        text === ""
+    ) {
+
+        statusBox.className =
+            "status-box error";
+
+
+        statusBox.innerHTML =
+            "⚠️ 먼저 읽을 영어 텍스트를 입력해주세요.";
+
+
+        return;
+
+    }
+
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        statusBox.className =
+            "status-box error";
+
+
+        statusBox.innerHTML =
+            "⚠️ 현재 브라우저에서는 음성 합성 기능을 지원하지 않습니다.";
+
+
+        return;
+
+    }
+
+
+    /*
+    Stop previous audio first.
+    */
+
+    window.speechSynthesis
+        .cancel();
+
+
+    const locale =
+        getSelectedAccent();
+
+
+    const voice =
+        findBestVoice(
+            locale
+        );
+
+
+    const rate =
+        Number(
+            document
+                .getElementById(
+                    "rateInput"
+                )
+                .value
+        );
+
+
+    const pitch =
+        Number(
+            document
+                .getElementById(
+                    "pitchInput"
+                )
+                .value
+        );
+
+
+    currentUtterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    currentUtterance.lang =
+        locale;
+
+
+    currentUtterance.rate =
+        rate;
+
+
+    currentUtterance.pitch =
+        pitch;
+
+
+    currentUtterance.volume =
+        1;
+
+
+    if (voice) {
+
+        currentUtterance.voice =
+            voice;
+
+    }
+
+
+    currentUtterance.onstart =
+        function() {
+
+            const accentName =
+                locale === "en-US"
+                ? "American English"
+                : "British English";
+
+
+            statusBox.className =
+                "status-box speaking";
+
+
+            statusBox.innerHTML =
+                "🔊 Playing in <strong>" +
+                accentName +
+                "</strong>" +
+
+                '<span class="wave">' +
+                    "<span></span>" +
+                    "<span></span>" +
+                    "<span></span>" +
+                    "<span></span>" +
+                "</span>";
+
+        };
+
+
+    currentUtterance.onend =
+        function() {
+
+            statusBox.className =
+                "status-box ready";
+
+
+            statusBox.innerHTML =
+                "✓ Audio finished. You can change the text or accent and listen again.";
+
+        };
+
+
+    currentUtterance.onerror =
+        function(event) {
+
+            /*
+            Chrome may report "interrupted"
+            when the Stop button is used.
+            */
+
+            if (
+                event.error === "interrupted"
+                ||
+                event.error === "canceled"
+            ) {
+
+                return;
+
+            }
+
+
+            statusBox.className =
+                "status-box error";
+
+
+            statusBox.innerHTML =
+                "⚠️ Audio could not be played. Please try again.";
+
+        };
+
+
+    window.speechSynthesis
+        .speak(
+            currentUtterance
+        );
+
+}
+
+
+/* =========================================================
+   STOP AUDIO
+========================================================= */
+
+function stopAudio() {
+
+    if (
+        "speechSynthesis" in window
+    ) {
+
+        window.speechSynthesis
+            .cancel();
+
+    }
+
+
+    const statusBox =
+        document.getElementById(
+            "statusBox"
+        );
+
+
+    statusBox.className =
+        "status-box ready";
+
+
+    statusBox.innerHTML =
+        "⏹ Audio stopped.";
+
+}
+
+
+/* =========================================================
+   SAMPLE TEXT
+========================================================= */
+
+function insertSampleText() {
+
+    const sample =
+        "Learning English gives us new opportunities to communicate with people around the world.";
+
+
+    document
+        .getElementById(
+            "textInput"
+        )
+        .value =
+        sample;
+
+
+    updateCharacterCount();
+
+}
+
+
+/* =========================================================
+   CHARACTER COUNT
+========================================================= */
+
+function updateCharacterCount() {
+
+    const text =
+        document
+            .getElementById(
+                "textInput"
+            )
+            .value;
+
+
+    document
+        .getElementById(
+            "characterCount"
+        )
+        .textContent =
+        text.length +
+        " / 2000";
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function updateSettings() {
+
+    const rate =
+        document
+            .getElementById(
+                "rateInput"
+            )
+            .value;
+
+
+    const pitch =
+        document
+            .getElementById(
+                "pitchInput"
+            )
+            .value;
+
+
+    document
+        .getElementById(
+            "rateValue"
+        )
+        .textContent =
+        Number(rate)
+            .toFixed(1) +
+        "×";
+
+
+    document
+        .getElementById(
+            "pitchValue"
+        )
+        .textContent =
+        Number(pitch)
+            .toFixed(1);
+
+}
+
+
+/* =========================================================
+   BASIC HTML ESCAPE
+========================================================= */
+
+function escapeHTML(text) {
+
+    return String(text)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+</script>
+
+</body>
+</html>
